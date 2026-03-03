@@ -1,0 +1,79 @@
+import { handleLogin } from "@/services/loginService";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const Login = () => {
+  const [userId, setUserId] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleLoginUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await handleLogin(userId, userPassword);
+
+      if (response.success) {
+        localStorage.setItem("isAdminAuthenticated", "true");
+        return navigate("/send-email");
+      } else {
+        setError("Invalid credentials");
+      }
+    } catch (err) {
+      setError("Connection failed. Is the backend running?");
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center  px-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
+          Mail Flow Login
+        </h2>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLoginUser} className="space-y-6 text-gray-700">
+          <div>
+            <label className="block text-sm font-medium ">Email Address</label>
+            <input
+              type="email"
+              required
+              placeholder="Enter your email"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              placeholder="Enter your password"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              value={userPassword}
+              onChange={(e) => setUserPassword(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Sign In
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

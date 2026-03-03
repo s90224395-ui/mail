@@ -1,0 +1,26 @@
+
+# 1. Socket.io default path proxy
+[[redirects]]
+  from = "/socket.io/*"
+  to = "http://BACKEND_URL_PLACEHOLDER/socket.io/:splat"
+  status = 200
+  force = true
+
+# 1. API Proxy - This MUST come first
+[[redirects]]
+  from = "/api/*"
+  to = "http://BACKEND_URL_PLACEHOLDER/api/:splat"
+  status = 200
+  force = true
+
+# 2. Single Page App (SPA) Fix - This MUST come last
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Credentials = "true"
+    Access-Control-Allow-Origin = "https://maillflow.netlify.app"
